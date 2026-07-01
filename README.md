@@ -40,7 +40,7 @@ The project follows a clean architecture by separating business logic into servi
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Technology            | Purpose               |
 | --------------------- | --------------------- |
