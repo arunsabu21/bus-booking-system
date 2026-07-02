@@ -165,9 +165,6 @@ def logout_user(validated_data):
     except Exception:
         raise ValidationError("Invalid or expired refresh token.")
     
-    except TokenError:
-        raise ValidationError("Invalid Token")
-    
     return {"message": "Logged out successfully."}
 
 
