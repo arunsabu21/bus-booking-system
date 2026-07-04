@@ -1,13 +1,15 @@
 from rest_framework import serializers
 from .models import Bus
 
+
 class BusSerializer(serializers.ModelSerializer):
+    operator = serializers.CharField(source="operator.company_name")
+
     class Meta:
         model = Bus
         fields = [
             "id",
             "operator",
-            "bus_number",
             "registration_number",
             "bus_name",
             "bus_type",
@@ -25,7 +27,7 @@ class BusSerializer(serializers.ModelSerializer):
         ]
 
 
-class BusListSerializer(serializers.Serializer):
+class BusListSerializer(serializers.ModelSerializer):
     operator = serializers.CharField(source="operator.company_name")
 
     class Meta:
