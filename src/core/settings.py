@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "buses",
     "cities",
     "routes",
+    "trips",
 ]
 
 AUTH_USER_MODEL = "authentication.User"
