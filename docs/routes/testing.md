@@ -56,3 +56,108 @@ None.
     "detail": "No routes found."
 }
 ```
+
+---
+
+## Get Route Details
+
+### Test Case 1 - Get route details by valid ID
+
+**Method**
+
+```http
+GET
+```
+
+**Endpoint**
+
+```text
+/api/routes/<route_id>/
+```
+
+**Headers**
+
+None.
+
+**Expected Status**
+
+```text
+200 OK
+```
+
+**Excepted Result**
+
+- Returns the requested active route.
+- Response Contains:
+  - id
+  - route_code
+  - route_name
+  - source_city
+  - is_active
+  - created_at
+  - updated_at
+
+---
+
+### Test Case 2 - Route does not exist
+
+**Method**
+
+```http
+GET
+```
+
+**Endpoint**
+
+```text
+/api/routes/<non_existing_route_by_id>/
+```
+
+**Headers**
+
+None.
+
+**Expected Status**
+
+```text
+404 Not Found
+```
+
+**Expected Result**
+
+```json
+{
+  "detail": "Route not found."
+}
+```
+
+---
+
+### Test Case 3 - Invalid Route ID
+
+**Method**
+
+```http
+GET
+```
+
+**Endpoint**
+
+```text
+/api/routes/invalid-uuid/
+```
+
+**Headers**
+
+None.
+
+**Expected Status**
+
+```text
+404 Not Found
+```
+
+**Expected Result**
+
+- Request is rejected because the route ID is not a valid UUID.
+- The request does not reach the view.
