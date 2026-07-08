@@ -13,7 +13,7 @@ http GET
 **Endpoint**
 
 ```text
-/api/routes/
+/api/v1/routes/
 ```
 
 **Headers**
@@ -72,7 +72,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/<route_id>/
+/api/v1/routes/<route_id>/
 ```
 
 **Headers**
@@ -110,7 +110,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/<non_existing_route_by_id>/
+/api/v1/routes/<non_existing_route_by_id>/
 ```
 
 **Headers**
@@ -144,7 +144,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/invalid-uuid/
+/api/v1/routes/invalid-uuid/
 ```
 
 **Headers**
@@ -175,7 +175,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/<route_id>/stops/
+/api/v1/routes/<route_id>/stops/
 ```
 
 **Headers**
@@ -212,7 +212,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/<route_id>/stops/
+/api/v1/routes/<route_id>/stops/
 ```
 
 **Headers**
@@ -244,7 +244,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/<non_existing_route_id>/stops/
+/api/v1/routes/<non_existing_route_id>/stops/
 ```
 
 **Headers**
@@ -278,7 +278,7 @@ GET
 **Endpoint**
 
 ```text
-/api/routes/invalid-uuid/stops/
+/api/v1/routes/invalid-uuid/stops/
 ```
 
 **Headers**

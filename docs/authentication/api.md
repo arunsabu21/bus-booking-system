@@ -5,7 +5,7 @@ This document describes all authentication-related endpoints available in the Bu
 **Base URL**
 
 ```
-/api/auth/
+/api/v1/auth/
 ```
 
 ---
@@ -17,7 +17,7 @@ Creates a new user account and sends an OTP to the registered email.
 ### Endpoint
 
 ```http
-POST /api/auth/register/
+POST /api/v1/auth/register/
 ```
 
 ### Request
@@ -58,7 +58,7 @@ Verifies the OTP sent to the user's email.
 ### Endpoint
 
 ```http
-POST /api/auth/verify-otp/
+POST /api/v1/auth/verify-otp/
 ```
 
 ### Request
@@ -95,7 +95,7 @@ Authenticates a verified user and returns JWT access and refresh tokens.
 ### Endpoint
 
 ```http
-POST /api/auth/login/
+POST /api/v1/auth/login/
 ```
 
 ### Request
@@ -141,7 +141,7 @@ Returns the authenticated user's profile.
 ### Endpoint
 
 ```http
-GET /api/auth/whoami/
+GET /api/v1/auth/whoami/
 ```
 
 ### Headers
@@ -175,7 +175,7 @@ Blacklists the refresh token.
 ### Endpoint
 
 ```http
-POST /api/auth/logout/
+POST /api/v1/auth/logout/
 ```
 
 ### Headers
@@ -216,7 +216,7 @@ Generates a password reset token and sends a reset link via email.
 ### Endpoint
 
 ```http
-POST /api/auth/forgot-password/
+POST /api/v1/auth/forgot-password/
 ```
 
 ### Request
@@ -251,7 +251,7 @@ Resets the user's password using the password reset token.
 ### Endpoint
 
 ```http
-POST /api/auth/reset-password/
+POST /api/v1/auth/reset-password/
 ```
 
 ### Request

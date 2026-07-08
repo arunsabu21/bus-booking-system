@@ -23,7 +23,7 @@ Authorization: Bearer <access_token>
 **Base URL**
 
 ```
-api/bookings/
+api/v1/bookings/
 ```
 
 ### Description
@@ -33,7 +33,7 @@ Returns all booking belonging to the authenticated user.
 **Endpoint**
 
 ```http
-GET /api/bookings/
+GET /api/v1/bookings/
 ```
 
 **Authentication**
@@ -71,7 +71,7 @@ Returns detailed information for a single booking owned by the authentication us
 **Endpoint**
 
 ```http
-GET /api/bookings/{booking_id}/
+GET /api/v1/bookings/{booking_id}/
 ```
 
 **Authentication**

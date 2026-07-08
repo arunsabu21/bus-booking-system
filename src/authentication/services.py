@@ -183,7 +183,7 @@ def forgot_password(validated_data):
 
     cache.set(f"password_reset:{token}", email, timeout=FORGOT_TOKEN_TIMEOUT)
 
-    reset_link = f"http://127.0.0.1:8000/api/auth/reset-password/?token={token}"
+    reset_link = f"http://127.0.0.1:8000/api/v1/auth/reset-password/?token={token}"
 
     try:
         send_mail(

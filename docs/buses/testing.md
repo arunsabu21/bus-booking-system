@@ -1,6 +1,6 @@
 # Buses API Testing
 
-## GET /api/buses/
+## GET /api/v1/buses/
 
 ### Test Case 1
 
@@ -19,7 +19,7 @@ Result:
 
 ---
 
-## GET /api/buses/{bus_id}/
+## GET /api/v1/buses/{bus_id}/
 
 ### Test Case 1
 

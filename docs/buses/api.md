@@ -3,7 +3,7 @@
 Base URL
 
 ```
-/api/buses/
+/api/v1/buses/
 ```
 
 ---
@@ -15,7 +15,7 @@ Returns all active buses.
 ### Endpoint
 
 ```
-GET /api/buses/
+GET /api/v1/buses/
 ```
 
 ### Authentication
@@ -50,7 +50,7 @@ Returns details of a single active bus.
 ### Endpoint
 
 ```
-GET /api/buses/{bus_id}/
+GET /api/v1/buses/{bus_id}/
 ```
 
 ### Authentication

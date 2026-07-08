@@ -1,6 +1,6 @@
 # Operators API Testing
 
-## GET /api/operators/
+## GET /api/v1/operators/
 
 ### Test Case 1
 
@@ -18,7 +18,7 @@ Result:
 
 ---
 
-## GET /api/operators/{operator_id}/
+## GET /api/v1/operators/{operator_id}/
 
 ### Test Case 1
 

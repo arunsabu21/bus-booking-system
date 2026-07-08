@@ -1,6 +1,6 @@
 # Cities API Testing
 
-## GET /api/cities/
+## GET /api/v1/cities/
 
 ### Test Case 1
 
@@ -19,7 +19,7 @@ Result:
 
 ---
 
-## GET /api/cities/{city_id}/
+## GET /api/v1/cities/{city_id}/
 
 ### Test Case 1
 

@@ -3,7 +3,7 @@
 Base URL
 
 ```
-/api/operators/
+/api/v1/operators/
 ```
 
 ---
@@ -15,7 +15,7 @@ Returns all active bus operators.
 ### Endpoint
 
 ```
-GET /api/operators/
+GET /api/v1/operators/
 ```
 
 ### Authentication
@@ -52,7 +52,7 @@ Returns details of a single active operator.
 ### Endpoint
 
 ```
-GET /api/operators/{operator_id}/
+GET /api/v1/operators/{operator_id}/
 ```
 
 ### Authentication

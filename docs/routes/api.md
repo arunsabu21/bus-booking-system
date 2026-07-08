@@ -5,7 +5,7 @@
 **Base URL**
 
 ```
-api/routes/
+api/v1/routes/
 ```
 
 ---
@@ -17,7 +17,7 @@ Returns a list of all active routes ordered by creation date.
 ### Endpoint
 
 ```
-GET /api/routes/
+GET /api/v1/routes/
 ```
 ### Authentication
 
@@ -52,7 +52,7 @@ Returns details of a single active route.
 ### Endpoint
 
 ```
-GET /api/routes/{route_id}/
+GET /api/v1/routes/{route_id}/
 ```
 
 ### Authentication
@@ -92,7 +92,7 @@ AllowAny
 **Endpoint**
 
 ```http
-GET /api/routes/<route_id>/stops/
+GET /api/v1/routes/<route_id>/stops/
 ```
 
 **Description**

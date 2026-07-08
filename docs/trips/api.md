@@ -5,7 +5,7 @@
 **Base URL**
 
 ```
-api/trips/
+api/v1/trips/
 ```
 
 ---
@@ -17,7 +17,7 @@ Returns a list of all active trips ordered by travel date and departure time.
 **Endpoint**
 
 ```http
-GET /api/trips/
+GET /api/v1/trips/
 ```
 
 **Authentication**
@@ -66,7 +66,7 @@ Returns details of a single active trip.
 **Endpoint**
 
 ```http
-GET /api/trips/{trip_id}/
+GET /api/v1/trips/{trip_id}/
 ```
 
 **Authentication**

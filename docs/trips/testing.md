@@ -13,7 +13,7 @@ GET
 **Endpoint**
 
 ```text
-/api/trips/
+/api/v1/trips/
 ```
 
 **Headers**
@@ -74,7 +74,7 @@ GET
 **Endpoint**
 
 ```text
-/api/trips/<trip_id>/
+/api/v1/trips/<trip_id>/
 ```
 
 **Headers**
@@ -117,7 +117,7 @@ GET
 **Endpoint**
 
 ```text
-/api/trips/<non_existing_trip_by_id>/
+/api/v1/trips/<non_existing_trip_by_id>/
 ```
 
 **Headers**
@@ -151,7 +151,7 @@ GET
 **Endpoint**
 
 ```text
-/api/trips/invalid-uuid/
+/api/v1/trips/invalid-uuid/
 ```
 
 **Headers**

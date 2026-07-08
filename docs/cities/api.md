@@ -3,7 +3,7 @@
 Base URL
 
 ```
-/api/cities/
+/api/v1/cities/
 ```
 
 ---
@@ -15,7 +15,7 @@ Returns all active cities.
 ### Endpoint
 
 ```
-GET /api/cities/
+GET /api/v1/cities/
 ```
 
 ### Authentication
@@ -52,7 +52,7 @@ Returns details of a single active city.
 ### Endpoint
 
 ```
-GET /api/cities/{city_id}/
+GET /api/v1/cities/{city_id}/
 ```
 
 ### Authentication

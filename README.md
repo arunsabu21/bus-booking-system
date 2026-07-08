@@ -115,13 +115,13 @@ Protected APIs
 
 | Method | Endpoint                     | Description              |
 | ------ | ---------------------------- | ------------------------ |
-| POST   | `/api/auth/register/`        | Register User            |
-| POST   | `/api/auth/verify-otp/`      | Verify Email OTP         |
-| POST   | `/api/auth/login/`           | User Login               |
-| POST   | `/api/auth/logout/`          | User Logout              |
-| GET    | `/api/auth/whoami/`          | Current User             |
-| POST   | `/api/auth/forgot-password/` | Send Password Reset Link |
-| POST   | `/api/auth/reset-password/`  | Reset Password           |
+| POST   | `/api/v1/auth/register/`        | Register User            |
+| POST   | `/api/v1/auth/verify-otp/`      | Verify Email OTP         |
+| POST   | `/api/v1/auth/login/`           | User Login               |
+| POST   | `/api/v1/auth/logout/`          | User Logout              |
+| GET    | `/api/v1/auth/whoami/`          | Current User             |
+| POST   | `/api/v1/auth/forgot-password/` | Send Password Reset Link |
+| POST   | `/api/v1/auth/reset-password/`  | Reset Password           |
 
 ---
 

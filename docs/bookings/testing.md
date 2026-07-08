@@ -13,7 +13,7 @@ GET
 **Endpoint**
 
 ```text
-/api/bookings/
+/api/v1/bookings/
 ```
 
 **Headers**
@@ -61,7 +61,7 @@ None
 ## Endpoint 2
 
 ```http
-GET /api/bookings/{booking_id}/
+GET /api/v1/bookings/{booking_id}/
 ```
 
 **Authentication Required**
