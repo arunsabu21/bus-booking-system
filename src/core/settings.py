@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "routes",
     "trips",
     "bookings",
+    "drf_spectacular",
 ]
 
 AUTH_USER_MODEL = "authentication.User"
@@ -147,6 +148,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # JWT config
@@ -175,4 +177,10 @@ CACHES = {
         "KEY_PREFIX": "booking_system",
         "TIMEOUT": 300,
     }
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Bus Booking System",
+    "DESCRIPTION": "REST API for bus ticket booking system",
+    "VERSION": "1.0.0",
 }
