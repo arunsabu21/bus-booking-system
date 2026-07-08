@@ -73,3 +73,27 @@ def generate_booking_reference():
             booking_reference=reference
         ).exists():
             return reference
+
+
+@transaction.atomic
+def cancel_booking(*, user, booking_id):
+    booking = Booking.objects.select_related(
+        "trip",
+    ).get(id=booking_id, user=user)
+
+    if booking.status == Booking.Status.CANCELLED:
+        raise ValidationError("Booking is already cancelled.")
+    
+    if booking.trip.status == Trip.Status.COMPLETED:
+        raise ValidationError("Completed trips cannot be cancelled.")
+    
+    trip = Trip.objects.select_for_update().get(id=booking.trip.id)
+
+    trip.available_seats += booking.seat_count
+    trip.save(update_fields=["available_seats"])
+
+    booking.status = Booking.Status.CANCELLED
+    booking.save(update_fields=["status"])
+
+    return booking
+

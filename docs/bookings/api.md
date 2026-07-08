@@ -170,6 +170,30 @@ Status: 201 Created
 }
 ```
 
+---
+
+## Cancel Booking
+
+**Endpoint**
+
+```http
+PATCH /api/v1/bookings/{booking_id}/
+```
+
+**Authentication**
+
+Required
+
+**Headers**
+
+```text
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+
+
+
 
 
 

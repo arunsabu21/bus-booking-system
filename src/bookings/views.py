@@ -8,7 +8,7 @@ from .serializers import (
     BookingSerializer,
     BookingCreateSerializer,
 )
-from .services import get_bookings, get_booking_details, create_booking
+from .services import get_bookings, get_booking_details, create_booking, cancel_booking
 
 
 @api_view(["GET"])
@@ -43,7 +43,7 @@ def booking_create(request):
     booking = create_booking(
         user=request.user,
         trip_id=serializer.validated_data["trip"].id,
-        seat_count = serializer.validated_data["seat_count"],
+        seat_count=serializer.validated_data["seat_count"],
     )
 
     response_serializer = BookingSerializer(booking)
@@ -51,4 +51,17 @@ def booking_create(request):
     return Response(
         response_serializer.data,
         status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def booking_cancel(request, booking_id):
+    cancel = cancel_booking(user=request.user, booking_id=booking_id)
+
+    serializer = BookingSerializer(cancel)
+
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK,
     )
