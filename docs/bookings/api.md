@@ -122,6 +122,54 @@ Authenticated users only.
 }
 ```
 
+## Create Booking
+
+**Endpoint**
+
+```http
+POST /api/v1/bookings/create/
+```
+
+**Authentication**
+
+Required
+
+**Headers**
+
+```text
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request Body**
+
+```json
+{
+  "trip": "2ea879b3-8719-4747-83fb-75df0bb13a39",
+  "seat_count": 2
+}
+```
+
+**Response**
+
+```text
+Status: 201 Created
+```
+
+```json
+{
+  "id": "fe47e271-e9b7-473c-b64e-ef1d7494f3eb",
+  "booking_reference": "BK-1011B2BF",
+  "user": "user@gmail.com",
+  "trip": "Chennai → Bengaluru",
+  "seat_count": 2,
+  "total_amount": "1700.00",
+  "status": "CONFIRMED",
+  "created_at": "2026-07-08T11:53:42.765421+05:30",
+  "updated_at": "2026-07-08T11:53:42.765443+05:30"
+}
+```
+
 
 
 

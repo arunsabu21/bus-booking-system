@@ -3,8 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import BookingListSerializer, BookingSerializer
-from .services import get_bookings, get_booking_details
+from .serializers import (
+    BookingListSerializer,
+    BookingSerializer,
+    BookingCreateSerializer,
+)
+from .services import get_bookings, get_booking_details, create_booking
 
 
 @api_view(["GET"])
@@ -28,3 +32,23 @@ def booking_details(request, booking_id):
     serializer = BookingSerializer(booking)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def booking_create(request):
+    serializer = BookingCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    booking = create_booking(
+        user=request.user,
+        trip_id=serializer.validated_data["trip"].id,
+        seat_count = serializer.validated_data["seat_count"],
+    )
+
+    response_serializer = BookingSerializer(booking)
+
+    return Response(
+        response_serializer.data,
+        status=status.HTTP_201_CREATED,
+    )

@@ -66,4 +66,10 @@ def create_booking(*, user, trip_id, seat_count):
 
 
 def generate_booking_reference():
-    return f"BK-{uuid.uuid4().hex[:8].upper()}"
+    while True:
+        reference = f"BK-{uuid.uuid4().hex[:8].upper()}"
+
+        if not Booking.objects.filter(
+            booking_reference=reference
+        ).exists():
+            return reference

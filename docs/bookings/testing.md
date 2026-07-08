@@ -99,3 +99,78 @@ GET /api/v1/bookings/{booking_id}/
 
 - Status Code 401 Unauthorized
 
+---
+
+## Create Booking
+
+**Method**
+
+```http
+POST
+```
+
+**Endpoint**
+
+```text
+/api/v1/bookings/create/
+```
+
+**Headers**
+
+```text
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request Body**
+
+```json
+{
+  "trip": "2ea879b3-8719-4747-83fb-75df0bb13a39",
+  "seat_count": 2
+}
+```
+
+**Expected Result**
+
+- Status Code: 201 Created
+- Booking created successfully
+- Booking reference generated
+- Total amount calculated
+- Available seats reduced
+
+---
+
+### Test Case 1 - Invalid Trip
+
+**Body**
+
+```json
+{
+    "trip": "00000000-000000-000000-0000000000",
+    "seat_count": 2
+}
+```
+
+**Expected**
+
+- 404 Not Found
+
+---
+
+### Test Case 2 - Seat count = 0
+
+**Body**
+
+```json
+{
+    "trip": "00000000-000000-000000-0000000000",
+    "seat_count": 0
+}
+```
+
+**Expected**
+
+- 400 Bad Request
+
+
