@@ -18,7 +18,9 @@ GET
 
 **Headers**
 
-None
+```text
+Authorization: Bearer <access_token>
+```
 
 **Expected Status**
 
@@ -30,6 +32,7 @@ None
 
 - Status Code 200 OK
 - Returns only the authenticated user's bookings.
+- Returns booked seat numbers.
 
 ---
 
@@ -38,7 +41,7 @@ None
 **Expected Result**
 
 - Status Code 200 OK
-- Returns an empty list
+- Returns an empty list.
 
 **Example**
 
@@ -58,10 +61,18 @@ None
 
 ---
 
-## Endpoint 2
+## Get Booking Details
+
+**Method**
 
 ```http
-GET /api/v1/bookings/{booking_id}/
+GET
+```
+
+**Endpoint**
+
+```text
+/api/v1/bookings/{booking_id}/
 ```
 
 **Authentication Required**
@@ -73,7 +84,7 @@ GET /api/v1/bookings/{booking_id}/
 **Expected Result**
 
 - Status Code 200 OK
-- Returns booking details
+- Returns booking details including selected seat numbers.
 
 ---
 
@@ -85,7 +96,7 @@ GET /api/v1/bookings/{booking_id}/
 
 ---
 
-### Test Case 3 - Invalid booking ID
+### Test Case 3 - Invalid Booking ID
 
 **Expected Result**
 
@@ -102,6 +113,8 @@ GET /api/v1/bookings/{booking_id}/
 ---
 
 ## Create Booking
+
+### Test Case 1 - Successful Booking
 
 **Method**
 
@@ -122,55 +135,167 @@ Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
-**Request Body**
+**Body**
 
 ```json
 {
   "trip": "2ea879b3-8719-4747-83fb-75df0bb13a39",
-  "seat_count": 2
+  "seat_numbers": [
+    "S1",
+    "S2"
+  ]
 }
 ```
 
 **Expected Result**
 
-- Status Code: 201 Created
-- Booking created successfully
-- Booking reference generated
-- Total amount calculated
-- Available seats reduced
+- Status Code 201 Created
+- Booking created successfully.
+- Booking reference generated.
+- SeatBooking records created.
+- Available seats reduced.
+- Returns selected seat numbers.
 
 ---
 
-### Test Case 1 - Invalid Trip
+### Test Case 2 - Invalid Trip
 
 **Body**
 
 ```json
 {
-    "trip": "00000000-000000-000000-0000000000",
-    "seat_count": 2
+  "trip": "00000000-0000-0000-0000-000000000000",
+  "seat_numbers": [
+    "S1"
+  ]
 }
 ```
 
-**Expected**
+**Expected Result**
 
-- 404 Not Found
+- Status Code 400 Bad Request
 
 ---
 
-### Test Case 2 - Seat count = 0
+### Test Case 3 - Empty Seat List
 
 **Body**
 
 ```json
 {
-    "trip": "00000000-000000-000000-0000000000",
-    "seat_count": 0
+  "trip": "2ea879b3-8719-4747-83fb-75df0bb13a39",
+  "seat_numbers": []
 }
 ```
 
-**Expected**
+**Expected Result**
 
-- 400 Bad Request
+- Status Code 400 Bad Request
 
+---
 
+### Test Case 4 - Duplicate Seat Numbers
+
+**Body**
+
+```json
+{
+  "trip": "2ea879b3-8719-4747-83fb-75df0bb13a39",
+  "seat_numbers": [
+    "S1",
+    "S1"
+  ]
+}
+```
+
+**Expected Result**
+
+- Status Code 400 Bad Request
+
+---
+
+### Test Case 5 - Already Booked Seat
+
+**Body**
+
+```json
+{
+  "trip": "2ea879b3-8719-4747-83fb-75df0bb13a39",
+  "seat_numbers": [
+    "S1"
+  ]
+}
+```
+
+**Expected Result**
+
+- Status Code 400 Bad Request
+
+---
+
+### Test Case 6 - Not Enough Seats Available
+
+**Body**
+
+Select more seats than the trip has available.
+
+**Expected Result**
+
+- Status Code 400 Bad Request
+
+---
+
+### Test Case 7 - Request Without JWT Token
+
+**Expected Result**
+
+- Status Code 401 Unauthorized
+
+---
+
+## Cancel Booking
+
+### Test Case 1 - Successfully Cancel Booking
+
+**Method**
+
+```http
+PATCH
+```
+
+**Endpoint**
+
+```text
+/api/v1/bookings/{booking_id}/cancel/
+```
+
+**Expected Result**
+
+- Status Code 200 OK
+- Booking status updated to `CANCELLED`.
+- Trip available seats increased.
+- Associated seat bookings removed (or released, depending on your implementation).
+
+---
+
+### Test Case 2 - Cancel Already Cancelled Booking
+
+**Expected Result**
+
+- Status Code 400 Bad Request
+
+---
+
+### Test Case 3 - Invalid Booking ID
+
+**Expected Result**
+
+- Status Code 404 Not Found
+
+---
+
+### Test Case 4 - Request Without JWT Token
+
+**Expected Result**
+
+- Status Code 401 Unauthorized

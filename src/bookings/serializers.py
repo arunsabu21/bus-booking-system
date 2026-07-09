@@ -1,10 +1,12 @@
 from rest_framework import serializers
 from .models import Booking
+from trips.models import Trip
 
 
 class BookingListSerializer(serializers.ModelSerializer):
     trip = serializers.CharField(source="trip.route.route_name")
     user = serializers.CharField(source="user.email")
+    seat_numbers = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -14,14 +16,24 @@ class BookingListSerializer(serializers.ModelSerializer):
             "user",
             "trip",
             "seat_count",
+            "seat_numbers",
             "total_amount",
             "status",
         ]
+
+    def get_seat_numbers(self, obj):
+        return list(
+            obj.seat_booking.values_list(
+                "seat_number",
+                flat=True,
+            )
+        )
 
 
 class BookingSerializer(serializers.ModelSerializer):
     trip = serializers.CharField(source="trip.route.route_name")
     user = serializers.CharField(source="user.email")
+    seat_numbers = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -31,6 +43,7 @@ class BookingSerializer(serializers.ModelSerializer):
             "user",
             "trip",
             "seat_count",
+            "seat_numbers",
             "total_amount",
             "status",
             "created_at",
@@ -47,11 +60,34 @@ class BookingSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+    def get_seat_numbers(self, obj):
+        return list(
+            obj.seat_booking.values_list(
+                "seat_number",
+                flat=True,
+            )
+        )
 
-class BookingCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking
-        fields = [
-            "trip",
-            "seat_count",
-        ]
+
+class BookingCreateSerializer(serializers.Serializer):
+    trip = serializers.PrimaryKeyRelatedField(
+        queryset=Trip.objects.filter(
+            is_active=True,
+        )
+    )
+
+    seat_numbers = serializers.ListField(
+        child=serializers.CharField(
+            max_length=10,
+        ),
+        allow_empty=False,
+    )
+
+    def validate_seat_numbers(self, value):
+        seat_numbers = [seat.strip().upper() for seat in value]
+        seat_count = len(seat_numbers)
+
+        if len(seat_numbers) != len(set(seat_numbers)):
+            raise serializers.ValidationError("Duplicate sear numbers are not allowed.")
+
+        return seat_numbers

@@ -20,7 +20,9 @@ class Booking(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.PROTECT, related_name="bookings")
     seat_count = models.PositiveSmallIntegerField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PENDING
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -31,3 +33,31 @@ class Booking(models.Model):
 
     def __str__(self):
         return self.booking_reference
+
+
+class SeatBooking(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    booking = models.ForeignKey(
+        "Booking", on_delete=models.CASCADE, related_name="seat_booking"
+    )
+    trip = models.ForeignKey(
+        Trip, on_delete=models.CASCADE, related_name="seat_booking"
+    )
+    seat_number = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Seat Booking"
+        verbose_name_plural = "Seat Bookings"
+
+        ordering = ["seat_number"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["trip", "seat_number"],
+                name="unique_trip_seat",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.trip} - {self.seat_number}"

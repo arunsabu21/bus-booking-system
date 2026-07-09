@@ -48,3 +48,23 @@ class TripListSerializer(serializers.ModelSerializer):
             "available_seats",
             "status",
         ]
+
+
+class TripSearchSerializer(serializers.ModelSerializer):
+    operator = serializers.CharField(source="bus.operator.company_name")
+    bus = serializers.CharField(source="bus.bus_name")
+    route = serializers.CharField(source="route.route_name")
+
+    class Meta:
+        model = Trip
+        fields = [
+            "id",
+            "operator",
+            "bus",
+            "route",
+            "travel_date",
+            "departure_time",
+            "arrival_time",
+            "fare",
+            "available_seats",
+        ]

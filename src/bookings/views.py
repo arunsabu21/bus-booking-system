@@ -8,7 +8,13 @@ from .serializers import (
     BookingSerializer,
     BookingCreateSerializer,
 )
-from .services import get_bookings, get_booking_details, create_booking, cancel_booking
+
+from .services import (
+    get_bookings,
+    get_booking_details,
+    create_booking,
+    cancel_booking,
+)
 
 
 @api_view(["GET"])
@@ -43,7 +49,7 @@ def booking_create(request):
     booking = create_booking(
         user=request.user,
         trip_id=serializer.validated_data["trip"].id,
-        seat_count=serializer.validated_data["seat_count"],
+        seat_numbers=serializer.validated_data["seat_numbers"],
     )
 
     response_serializer = BookingSerializer(booking)

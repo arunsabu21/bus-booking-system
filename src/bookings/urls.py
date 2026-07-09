@@ -1,5 +1,10 @@
 from django.urls import path
-from .views import booking_list, booking_details, booking_create, booking_cancel
+from .views import (
+    booking_list,
+    booking_details,
+    booking_create,
+    booking_cancel,
+)
 
 urlpatterns = [
     path("", booking_list, name="booking-list"),

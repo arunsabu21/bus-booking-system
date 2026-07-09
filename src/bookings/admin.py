@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Booking
+from .models import Booking, SeatBooking
 
 
 @admin.register(Booking)
@@ -32,3 +32,32 @@ class BookingAdmin(admin.ModelAdmin):
     )
 
     ordering = ("-created_at",)
+
+
+@admin.register(SeatBooking)
+class SeatBookingAdmin(admin.ModelAdmin):
+    list_display = (
+        "seat_number",
+        "booking",
+        "trip",
+        "created_at",
+    )
+
+    list_filter = (
+        "trip",
+        "created_at",
+    )
+
+    search_fields = (
+        "seat_number",
+        "booking__booking_reference",
+    )
+
+    readonly_fields = (
+        "id",
+        "created_at",
+    )
+
+    ordering = (
+        "seat_number",
+    )

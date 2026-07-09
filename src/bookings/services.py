@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.db import transaction
 from rest_framework.exceptions import NotFound, ValidationError
 
-from .models import Booking
+from .models import Booking, SeatBooking
 from trips.models import Trip
 
 
@@ -30,7 +30,7 @@ def get_booking_details(user, booking_id):
 
 
 @transaction.atomic
-def create_booking(*, user, trip_id, seat_count):
+def create_booking(*, user, trip_id, seat_numbers):
     try:
         trip = Trip.objects.select_for_update().get(
             id=trip_id,
@@ -38,16 +38,28 @@ def create_booking(*, user, trip_id, seat_count):
         )
     except Trip.DoesNotExist:
         raise NotFound("Trip not found.")
-    
+
     if trip.status != Trip.Status.SCHEDULED:
         raise ValidationError("Trip is not available for booking.")
+
+    seat_count = len(seat_numbers)
+
+    if seat_count == 0:
+        raise ValidationError("Select at least one seat.")
     
-    if seat_count <= 0:
-        raise ValidationError("Seat count must be greater than 0.")
-    
+    booked_seats = set(
+        SeatBooking.objects.filter(
+            trip=trip,
+            seat_number__in=seat_numbers,
+        ).values_list("seat_number", flat=True)
+    )
+
+    if booked_seats:
+        raise ValidationError(f"Seat(s) already booked: {','.join(sorted(booked_seats))}")
+
     if seat_count > trip.available_seats:
         raise ValidationError("Not enough seats available.")
-    
+
     total_amount = Decimal(seat_count) * trip.fare
 
     booking = Booking.objects.create(
@@ -57,6 +69,17 @@ def create_booking(*, user, trip_id, seat_count):
         seat_count=seat_count,
         total_amount=total_amount,
         status=Booking.Status.CONFIRMED,
+    )
+
+    SeatBooking.objects.bulk_create(
+        [
+            SeatBooking(
+                booking=booking,
+                trip=trip,
+                seat_number=seat_number,
+            )
+            for seat_number in seat_numbers
+        ]
     )
 
     trip.available_seats -= seat_count
@@ -69,9 +92,7 @@ def generate_booking_reference():
     while True:
         reference = f"BK-{uuid.uuid4().hex[:8].upper()}"
 
-        if not Booking.objects.filter(
-            booking_reference=reference
-        ).exists():
+        if not Booking.objects.filter(booking_reference=reference).exists():
             return reference
 
 
@@ -83,10 +104,10 @@ def cancel_booking(*, user, booking_id):
 
     if booking.status == Booking.Status.CANCELLED:
         raise ValidationError("Booking is already cancelled.")
-    
+
     if booking.trip.status == Trip.Status.COMPLETED:
         raise ValidationError("Completed trips cannot be cancelled.")
-    
+
     trip = Trip.objects.select_for_update().get(id=booking.trip.id)
 
     trip.available_seats += booking.seat_count
@@ -96,4 +117,3 @@ def cancel_booking(*, user, booking_id):
     booking.save(update_fields=["status"])
 
     return booking
-
