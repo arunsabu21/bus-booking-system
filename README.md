@@ -8,8 +8,6 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
 ![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis)
 ![JWT](https://img.shields.io/badge/JWT-SimpleJWT-black)
-![License](https://img.shields.io/badge/License-MIT-green)
-
 </p>
 
 ## Overview
@@ -228,6 +226,7 @@ python manage.py runserver
 - Postman
 - Insomnia
 - cURL
+- Thunder Client 
 
 ---
 
