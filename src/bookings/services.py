@@ -47,6 +47,19 @@ def create_booking(*, user, trip_id, seat_numbers):
     if seat_count == 0:
         raise ValidationError("Select at least one seat.")
     
+    valid_seats = {
+        f"S{number}" for number in range(1, trip.bus.total_seats + 1)
+    }
+
+    invalid_seats = [
+        seat
+        for seat in seat_numbers
+        if seat not in valid_seats
+    ]
+
+    if invalid_seats:
+        raise ValidationError(f"Invalid seat numbers(s): {','.join(invalid_seats)}")
+    
     booked_seats = set(
         SeatBooking.objects.filter(
             trip=trip,
@@ -115,5 +128,9 @@ def cancel_booking(*, user, booking_id):
 
     booking.status = Booking.Status.CANCELLED
     booking.save(update_fields=["status"])
+
+    SeatBooking.objects.filter(
+        booking=booking,
+    ).delete()
 
     return booking
