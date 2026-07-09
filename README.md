@@ -1,8 +1,22 @@
-# Bus Booking API
+# Bus Booking System
 
-A scalable and secure backend API for a Bus Booking System built with **Django**, **Django REST Framework**, **PostgreSQL**, **Redis**, and **JWT Authentication**.
+<p align="center">
 
-The project follows a clean architecture by separating business logic into service layers, serializers, and views for better maintainability and scalability.
+![Python](https://img.shields.io/badge/Python-3.14-blue?logo=python)
+![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django)
+![Django REST Framework](https://img.shields.io/badge/DRF-REST%20API-red)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
+![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis)
+![JWT](https://img.shields.io/badge/JWT-SimpleJWT-black)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+</p>
+
+## Overview
+
+A scalable and production-ready Bus Booking REST API built with Django, Django REST Framework, PostgreSQL, Redis, and JWT Authentication.
+
+The project follows a clean architecture by separating business logic into Services, Serializers, and Views for maintainability, scalability, and testability.
 
 ---
 
@@ -17,64 +31,90 @@ The project follows a clean architecture by separating business logic into servi
 - Logout (Token Blacklisting)
 - Forgot Password
 - Password Reset
-- Password Validation
 - Login Attempt Rate Limiting
 - Redis-based OTP Storage
+
+### Bus Management
+
+- Cities
+- Operators
+- Routes
+- Buses
+- Trips
+- Trip Search
+
+### Booking System
+
+- Seat Availability
+- Seat Selection
+- Booking Creation
+- Booking Cancellation
+- Booking History
+- Booking Reference Generation
+- Seat Validation
+
+### Performance
+
+- Redis Trip Search Caching
+- Optimized Database Queries
+- Service Layer Architecture
 
 ### Security
 
 - Custom User Model
-- JWT Access & Refresh Tokens
 - Password Hashing
 - Django Password Validators
-- Redis Token Expiration
-- Environment Variable Configuration
-
-### Backend
-
-- Django REST Framework
-- PostgreSQL Database
+- Environment Variables
+- JWT Access & Refresh Tokens
 - Redis Cache
-- Service Layer Architecture
-- Clean API Responses
 
 ---
 
 ## Tech Stack
 
-| Technology            | Purpose               |
-| --------------------- | --------------------- |
-| Python                | Programming Language  |
-| Django                | Backend Framework     |
-| Django REST Framework | REST API              |
-| PostgreSQL            | Database              |
-| Redis                 | OTP & Cache           |
-| Simple JWT            | Authentication        |
-| python-decouple       | Environment Variables |
+| Category       | Technology            |
+| -------------- | --------------------- |
+| Language       | Python                |
+| Framework      | Django                |
+| API            | Django REST Framework |
+| Database       | PostgreSQL            |
+| Cache          | Redis                 |
+| Authentication | SimpleJWT             |
+
+---
+
+## Architecture
+
+```text
+Client
+   │
+Views
+   │
+Services
+   │
+Models
+   │
+PostgreSQL
+```
 
 ---
 
 ## Project Structure
 
 ```text
-bus-booking-api/
-│
+src/
 ├── authentication/
-│   ├── managers.py
-│   ├── models.py
-│   ├── serializers.py
-│   ├── services.py
-│   ├── views.py
-│   ├── urls.py
-│   └── migrations/
-│
+├── bookings/
+├── buses/
+├── cities/
+├── operators/
+├── routes/
+├── trips/
 ├── core/
-│
-├── docs/
-│
-├── requirements.txt
-├── manage.py
-└── README.md
+│   ├── cache/
+│   ├── constants/
+│   └── settings.py
+└── manage.py
 ```
 
 ---
@@ -83,51 +123,61 @@ bus-booking-api/
 
 ```text
 Register
-      │
-      ▼
+    │
 Generate OTP
-      │
-      ▼
-Store OTP in Redis
-      │
-      ▼
-Send OTP Email
-      │
-      ▼
+    │
+Store OTP (Redis)
+    │
 Verify OTP
-      │
-      ▼
+    │
 Activate Account
-      │
-      ▼
+    │
 Login
-      │
-      ▼
-JWT Access & Refresh Token
-      │
-      ▼
+    │
+JWT Authentication
+    │
 Protected APIs
 ```
 
 ---
 
-## Authentication Endpoints
+## Booking Flow
 
-| Method | Endpoint                     | Description              |
-| ------ | ---------------------------- | ------------------------ |
-| POST   | `/api/v1/auth/register/`        | Register User            |
-| POST   | `/api/v1/auth/verify-otp/`      | Verify Email OTP         |
-| POST   | `/api/v1/auth/login/`           | User Login               |
-| POST   | `/api/v1/auth/logout/`          | User Logout              |
-| GET    | `/api/v1/auth/whoami/`          | Current User             |
-| POST   | `/api/v1/auth/forgot-password/` | Send Password Reset Link |
-| POST   | `/api/v1/auth/reset-password/`  | Reset Password           |
+```text
+Search Trip
+    │
+View Seats
+    │
+Select Seats
+    │
+Create Booking
+    │
+Reserve Seats
+    │
+Cancel Booking
+    │
+Release Seats
+```
+
+---
+
+## API Documentation
+
+Project documentation is available in the `docs/` directory.
+
+- Authentication
+- Cities
+- Operators
+- Routes
+- Buses
+- Trips
+- Bookings
+
+Each module includes API documentation and testing guides.
 
 ---
 
 ## Environment Variables
-
-Create a `.env` file.
 
 ```env
 SECRET_KEY=
@@ -154,61 +204,25 @@ FORGOT_TOKEN_TIMEOUT=900
 
 ## Installation
 
-Clone the repository
-
 ```bash
 git clone <repository-url>
-```
 
-Move into the project
-
-```bash
 cd bus-booking-api
-```
 
-Create virtual environment
-
-```bash
 python -m venv .venv
-```
 
-Activate virtual environment
-
-Linux / macOS
-
-```bash
 source .venv/bin/activate
-```
 
-Windows
-
-```bash
-.venv\Scripts\activate
-```
-
-Install dependencies
-
-```bash
 pip install -r requirements.txt
-```
 
-Apply migrations
-
-```bash
 python manage.py migrate
-```
 
-Run the server
-
-```bash
 python manage.py runserver
 ```
 
 ---
 
 ## Testing
-
-The API can be tested using:
 
 - Bruno
 - Postman
@@ -217,16 +231,16 @@ The API can be tested using:
 
 ---
 
-## Future Roadmap
+## Roadmap
 
-- Bus Management
-- Route Management
-- Seat Management
-- Booking System
 - Payment Integration
 - Ticket Generation
-- Admin Dashboard
 - Notifications
+- Pagination
+- Filtering
+- Docker
+- CI/CD
+- AWS Deployment
 
 ---
 
@@ -234,6 +248,7 @@ The API can be tested using:
 
 **Arun**
 
-Backend Developer focused on building scalable REST APIs with Django and Python.
+Backend Software Engineer
 
 ---
+
