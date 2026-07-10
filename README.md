@@ -1,4 +1,4 @@
-# Bus Booking System
+# Halt API
 
 <p align="center">
 
