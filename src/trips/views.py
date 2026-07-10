@@ -6,9 +6,9 @@ from rest_framework import status
 from .serializers import TripListSerializer, TripSerializer, TripSearchSerializer
 from .services import get_trips, get_trip_by_id, search_trips, get_trip_seats
 
-from core.cache.keys import trip_search_key
+from core.cache.keys import trip_search_key, trip_details_key
 from core.cache.services import get_cache, set_cache
-from core.constants.cache import TRIP_SEARCH_CACHE_TIMEOUT
+from core.constants.cache import TRIP_SEARCH_CACHE_TIMEOUT, TRIP_DETAILS_CACHE_TIMEOUT
 
 
 @api_view(["GET"])
@@ -27,9 +27,24 @@ def list_trips(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def trip_details(request, trip_id):
+    cache_key = trip_details_key(trip_id)
+    cached_response = get_cache(cache_key)
+
+    if cached_response is not None:
+        return Response(
+            cached_response,
+            status=status.HTTP_200_OK,
+        )
+    
     trip = get_trip_by_id(trip_id)
 
     serializer = TripSerializer(trip)
+
+    set_cache(
+        key=cache_key,
+        value=serializer.data,
+        timeout=TRIP_DETAILS_CACHE_TIMEOUT,
+    )
 
     return Response(
         serializer.data,

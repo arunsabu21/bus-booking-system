@@ -6,14 +6,32 @@ from rest_framework import status
 from .serializers import RouteSerializer, RouteStopSerializer
 from .services import get_routes, get_route_by_id, get_route_stops
 
+from core.cache.keys import get_routes_list_key
+from core.cache.services import get_cache, set_cache
+from core.constants.cache import ROUTE_LIST_CACHE_TIMEOUT
+
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_available_routes(request):
+    cache_key = get_routes_list_key()
+    cached_response = get_cache(cache_key)
+
+    if cached_response is not None:
+        return Response(
+            cached_response,
+            status=status.HTTP_200_OK,
+        )
 
     routes = get_routes()
 
     serializer = RouteSerializer(routes, many=True)
+
+    set_cache(
+        key=cache_key,
+        value=serializer.data,
+        timeout=ROUTE_LIST_CACHE_TIMEOUT,
+    )
 
     return Response(
         serializer.data,
