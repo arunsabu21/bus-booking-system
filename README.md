@@ -1,6 +1,10 @@
+<div align="center">
+
 # Halt API
 
-<p align="center">
+**A scalable, production-ready Bus Booking REST API**
+
+Built with Django, Django REST Framework, PostgreSQL, Redis, and JWT Authentication.
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue?logo=python)
 ![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django)
@@ -8,13 +12,34 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
 ![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis)
 ![JWT](https://img.shields.io/badge/JWT-SimpleJWT-black)
-</p>
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Authentication Flow](#authentication-flow)
+- [Booking Flow](#booking-flow)
+- [API Documentation](#api-documentation)
+- [Environment Variables](#environment-variables)
+- [Installation](#installation)
+- [Testing](#testing)
+- [Roadmap](#roadmap)
+- [Author](#author)
+
+---
 
 ## Overview
 
-A scalable and production-ready Bus Booking REST API built with Django, Django REST Framework, PostgreSQL, Redis, and JWT Authentication.
+Halt is a scalable, production-ready Bus Booking REST API built with Django, Django REST Framework, PostgreSQL, Redis, and JWT Authentication.
 
-The project follows a clean architecture by separating business logic into Services, Serializers, and Views for maintainability, scalability, and testability.
+The project follows a clean architecture that separates business logic into **services**, **serializers**, and **views**, ensuring maintainability, scalability, and testability.
 
 ---
 
@@ -22,15 +47,13 @@ The project follows a clean architecture by separating business logic into Servi
 
 ### Authentication
 
-- User Registration
-- Email OTP Verification
-- JWT Authentication
-- Login
-- Logout (Token Blacklisting)
-- Forgot Password
-- Password Reset
-- Login Attempt Rate Limiting
-- Redis-based OTP Storage
+- User registration
+- Email OTP verification
+- JWT authentication
+- Login / logout with token blacklisting
+- Forgot password and password reset
+- Login attempt rate limiting
+- Redis-based OTP storage
 
 ### Bus Management
 
@@ -39,45 +62,44 @@ The project follows a clean architecture by separating business logic into Servi
 - Routes
 - Buses
 - Trips
-- Trip Search
+- Trip search
 
 ### Booking System
 
-- Seat Availability
-- Seat Selection
-- Booking Creation
-- Booking Cancellation
-- Booking History
-- Booking Reference Generation
-- Seat Validation
+- Seat availability
+- Seat selection
+- Booking creation and cancellation
+- Booking history
+- Booking reference generation
+- Seat validation
 
 ### Performance
 
-- Redis Trip Search Caching
-- Optimized Database Queries
-- Service Layer Architecture
+- Redis-based trip search caching
+- Optimized database queries
+- Service layer architecture
 
 ### Security
 
-- Custom User Model
-- Password Hashing
-- Django Password Validators
-- Environment Variables
-- JWT Access & Refresh Tokens
-- Redis Cache
+- Custom user model
+- Password hashing
+- Django password validators
+- Environment-based configuration
+- JWT access and refresh tokens
+- Redis-backed caching
 
 ---
 
 ## Tech Stack
 
-| Category       | Technology            |
-| -------------- | --------------------- |
-| Language       | Python                |
-| Framework      | Django                |
-| API            | Django REST Framework |
-| Database       | PostgreSQL            |
-| Cache          | Redis                 |
-| Authentication | SimpleJWT             |
+| Category       | Technology             |
+|----------------|-------------------------|
+| Language       | Python                  |
+| Framework      | Django                  |
+| API            | Django REST Framework   |
+| Database       | PostgreSQL              |
+| Cache          | Redis                   |
+| Authentication | SimpleJWT               |
 
 ---
 
@@ -85,13 +107,13 @@ The project follows a clean architecture by separating business logic into Servi
 
 ```text
 Client
-   │
+  │
 Views
-   │
+  │
 Services
-   │
+  │
 Models
-   │
+  │
 PostgreSQL
 ```
 
@@ -121,19 +143,19 @@ src/
 
 ```text
 Register
-    │
+  │
 Generate OTP
-    │
+  │
 Store OTP (Redis)
-    │
+  │
 Verify OTP
-    │
+  │
 Activate Account
-    │
+  │
 Login
-    │
+  │
 JWT Authentication
-    │
+  │
 Protected APIs
 ```
 
@@ -143,17 +165,17 @@ Protected APIs
 
 ```text
 Search Trip
-    │
+  │
 View Seats
-    │
+  │
 Select Seats
-    │
+  │
 Create Booking
-    │
+  │
 Reserve Seats
-    │
+  │
 Cancel Booking
-    │
+  │
 Release Seats
 ```
 
@@ -161,7 +183,7 @@ Release Seats
 
 ## API Documentation
 
-Project documentation is available in the `docs/` directory.
+Full API documentation is available in the [`docs/`](./docs) directory, covering:
 
 - Authentication
 - Cities
@@ -171,11 +193,13 @@ Project documentation is available in the `docs/` directory.
 - Trips
 - Bookings
 
-Each module includes API documentation and testing guides.
+Each module includes endpoint documentation and testing guides.
 
 ---
 
 ## Environment Variables
+
+Create a `.env` file in the project root with the following variables:
 
 ```env
 SECRET_KEY=
@@ -204,17 +228,14 @@ FORGOT_TOKEN_TIMEOUT=900
 
 ```bash
 git clone <repository-url>
-
 cd bus-booking-api
 
 python -m venv .venv
-
 source .venv/bin/activate
 
 pip install -r requirements.txt
 
 python manage.py migrate
-
 python manage.py runserver
 ```
 
@@ -222,32 +243,30 @@ python manage.py runserver
 
 ## Testing
 
+API testing can be performed using any of the following tools:
+
 - Bruno
 - Postman
 - Insomnia
 - cURL
-- Thunder Client 
+- Thunder Client
 
 ---
 
 ## Roadmap
 
-- Payment Integration
-- Ticket Generation
-- Notifications
-- Pagination
-- Filtering
-- Docker
-- CI/CD
-- AWS Deployment
+- [ ] Payment integration
+- [ ] Ticket generation
+- [ ] Notifications
+- [ ] Pagination
+- [ ] Filtering
+- [ ] Docker
+- [ ] CI/CD
+- [ ] Deployment
 
 ---
 
 ## Author
 
 **Arun**
-
 Backend Software Engineer
-
----
-
