@@ -4,6 +4,7 @@ import string
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.exceptions import ValidationError
+from django.db import transaction, IntegrityError
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth.password_validation import validate_password
 from django.core.cache import cache
@@ -31,18 +32,26 @@ def send_otp_email(email, otp):
     )
 
 
+@transaction.atomic()
 def register_user(validated_data):
     email = validated_data["email"]
     full_name = validated_data["full_name"]
     phone_number = validated_data["phone_number"]
     password = validated_data["password"]
 
-    user = User.objects.only(
+    user = User.objects.select_for_update().only(
         "id",
         "email",
         "is_verified",
         "phone_number",
     ).filter(email=email).first()
+
+    phone_taken = User.objects.filter(phone_number=phone_number).exclude(
+        email=email
+    ).exists()
+
+    if phone_taken:
+        raise ValidationError("Phone number already exists.")
 
     if user:
         if user.is_verified:
@@ -61,19 +70,16 @@ def register_user(validated_data):
         )
 
     else:
-        existing_phone = User.objects.filter(
-            phone_number=phone_number
-        ).exists()
+        try:
+            user = User.objects.create_user(
+                email=email,
+                full_name=full_name,
+                phone_number=phone_number,
+                password=password,
+            )
 
-        if existing_phone:
-            raise ValidationError("Phone number already exists.")
-
-        user = User.objects.create_user(
-            email=email,
-            full_name=full_name,
-            phone_number=phone_number,
-            password=password,
-        )
+        except IntegrityError:
+            raise ValidationError("Registration failed. Try again.")
 
     otp = generate_otp()
 

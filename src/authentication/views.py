@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from .throttles import RegisterRateThrottle
 from .serializers import (
     RegisterSerializer,
     VerifyOtpSerializer,
@@ -22,6 +23,7 @@ from .services import (
 
 
 @api_view(["POST"])
+@throttle_classes([RegisterRateThrottle])
 @permission_classes([AllowAny])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
