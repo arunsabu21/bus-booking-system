@@ -43,11 +43,11 @@ def register_user(validated_data):
     ).exists()
 
     if phone_taken:
-        raise ValidationError("Phone number already exists.")
+        raise ValidationError("An account may already exist with the provided information.")
 
     if user:
         if user.is_verified:
-            raise ValidationError("Email already registered.")
+            raise ValidationError("An account may already exists with the provided information.")
 
         user.full_name = full_name
         user.phone_number = phone_number
@@ -88,15 +88,15 @@ def verify_otp(validated_data):
     cached_otp = cache.get(f"otp:{email}")
 
     if cached_otp is None:
-        raise ValidationError("OTP Expired or invalid.")
+        raise ValidationError("Invalid or expired verification code.")
     
     if not secrets.compare_digest(cached_otp, otp):
-        raise ValidationError("Invalid OTP.")
+        raise ValidationError("Invalid or expired verification code.")
     
     user = User.objects.filter(email=email).first()
 
     if not user:
-        raise ValidationError("User not found.")
+        raise ValidationError("Verification could not be completed.")
 
     user.is_verified = True
     user.save(update_fields=["is_verified"])

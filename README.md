@@ -11,6 +11,7 @@ Built with Django, Django REST Framework, PostgreSQL, Redis, and JWT Authenticat
 ![Django REST Framework](https://img.shields.io/badge/DRF-REST%20API-red)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
 ![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis)
+![Celery](https://img.shields.io/badge/Celery-Task%20Queue-37814A?logo=celery&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-SimpleJWT-black)
 
 </div>
@@ -92,14 +93,15 @@ The project follows a clean architecture that separates business logic into **se
 
 ## Tech Stack
 
-| Category       | Technology             |
-|----------------|-------------------------|
-| Language       | Python                  |
-| Framework      | Django                  |
-| API            | Django REST Framework   |
-| Database       | PostgreSQL              |
-| Cache          | Redis                   |
-| Authentication | SimpleJWT               |
+| Category       | Technology            |
+| -------------- | --------------------- |
+| Language       | Python                |
+| Framework      | Django                |
+| API            | Django REST Framework |
+| Database       | PostgreSQL            |
+| Cache          | Redis                 |
+| Task Queue     | Celery                |
+| Authentication | SimpleJWT             |
 
 ---
 
