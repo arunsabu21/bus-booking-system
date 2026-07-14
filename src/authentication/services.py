@@ -120,7 +120,7 @@ def login_user(validated_data):
 
     user = User.objects.filter(email=email).first()
 
-    if not user or not User.check_password(password):
+    if not user or not user.check_password(password):
         attempts +=1
         cache.set(f"login_attempt:{email}", attempts, timeout=LOGIN_ATTEMPT_TIMEOUT)
         raise ValidationError("Invalid email or password.")
