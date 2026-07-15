@@ -12,7 +12,7 @@ from decouple import config
 
 from .models import User
 
-from .tasks import send_otp_email_task
+from .tasks import send_otp_email_task, send_password_reset_email_task
 
 LOGIN_ATTEMPT_LIMIT = config("LOGIN_ATTEMPT_LIMIT", cast=int)
 LOGIN_ATTEMPT_TIMEOUT = config("LOGIN_ATTEMPT_TIMEOUT", cast=int)
@@ -31,23 +31,32 @@ def register_user(validated_data):
     phone_number = validated_data["phone_number"]
     password = validated_data["password"]
 
-    user = User.objects.select_for_update().only(
-        "id",
-        "email",
-        "is_verified",
-        "phone_number",
-    ).filter(email=email).first()
+    user = (
+        User.objects.select_for_update()
+        .only(
+            "id",
+            "email",
+            "is_verified",
+            "phone_number",
+        )
+        .filter(email=email)
+        .first()
+    )
 
-    phone_taken = User.objects.filter(phone_number=phone_number).exclude(
-        email=email
-    ).exists()
+    phone_taken = (
+        User.objects.filter(phone_number=phone_number).exclude(email=email).exists()
+    )
 
     if phone_taken:
-        raise ValidationError("An account may already exist with the provided information.")
+        raise ValidationError(
+            "An account may already exist with the provided information."
+        )
 
     if user:
         if user.is_verified:
-            raise ValidationError("An account may already exists with the provided information.")
+            raise ValidationError(
+                "An account may already exists with the provided information."
+            )
 
         user.full_name = full_name
         user.phone_number = phone_number
@@ -89,10 +98,10 @@ def verify_otp(validated_data):
 
     if cached_otp is None:
         raise ValidationError("Invalid or expired verification code.")
-    
+
     if not secrets.compare_digest(cached_otp, otp):
         raise ValidationError("Invalid or expired verification code.")
-    
+
     user = User.objects.filter(email=email).first()
 
     if not user:
@@ -103,9 +112,7 @@ def verify_otp(validated_data):
 
     cache.delete(f"otp:{email}")
 
-    return {
-        "message": "Email verified successfully."
-    }
+    return {"message": "Email verified successfully."}
 
 
 def login_user(validated_data):
@@ -115,13 +122,14 @@ def login_user(validated_data):
     attempts = cache.get(f"login_attempt:{email}", 0)
 
     if attempts >= LOGIN_ATTEMPT_LIMIT:
-        raise ValidationError("Too many failed login attempts. Please try again after 5 minutes.")
-    
+        raise ValidationError(
+            "Too many failed login attempts. Please try again after 5 minutes."
+        )
 
     user = User.objects.filter(email=email).first()
 
     if not user or not user.check_password(password):
-        attempts +=1
+        attempts += 1
         cache.set(f"login_attempt:{email}", attempts, timeout=LOGIN_ATTEMPT_TIMEOUT)
         raise ValidationError("Invalid email or password.")
 
@@ -153,41 +161,24 @@ def logout_user(validated_data):
 
     except Exception:
         raise ValidationError("Invalid or expired refresh token.")
-    
+
     return {"message": "Logged out successfully."}
 
 
 def forgot_password(validated_data):
     email = validated_data["email"]
 
-    user = User.objects.filter(email=email).first()
+    user = User.objects.filter(email=email, is_verified=True).first()
 
-    if not user:
-        raise ValidationError("User doesn't exist")
-    
-    if not user.is_verified:
-        raise ValidationError("Please verify your email first.")
-    
-    token = secrets.token_urlsafe(32)
+    if user:
+        token = secrets.token_urlsafe(32)
+        cache.set(f"password_reset:{token}", email, timeout=FORGOT_TOKEN_TIMEOUT)
 
-    cache.set(f"password_reset:{token}", email, timeout=FORGOT_TOKEN_TIMEOUT)
-
-    reset_link = f"http://127.0.0.1:8000/api/v1/auth/reset-password/?token={token}"
-
-    try:
-        send_mail(
-            subject="Reset your password",
-            message=f"Click the link below to reset your password:\n\n{reset_link}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-        )
-
-    except Exception:
-        cache.delete(f"password_reset:{token}")
-        raise ValidationError("Something went wrong. Failed to send password reset link.")
+        reset_link = f"{settings.FRONTEND_URL}/auth/reset-password?token={token}"
+        send_password_reset_email_task.delay(email, reset_link)
 
     return {
-        "message": "Password reset link sent successfully."
+        "message": "If an account with this email exists, a password reset link has been sent."
     }
 
 
@@ -199,32 +190,22 @@ def reset_password(validated_data):
 
     if not email:
         raise ValidationError("Invalid or expired reset token.")
-    
+
     user = User.objects.filter(email=email).first()
 
     if not user:
         raise ValidationError("User not found.")
-    
+
     if user.check_password(new_password):
         raise ValidationError(
             "New password cannot be the same as your current password."
         )
-    
-    validate_password(new_password, user)
-    
-    try:
-        user.set_password(new_password)
-        user.save(update_fields=["password"])
 
-    except Exception:
-        raise ValidationError("Something went wrong. Failed to reset password.")
-    
+    validate_password(new_password, user)
+
+    user.set_password(new_password)
+    user.save(update_fields=["password"])
+
     cache.delete(f"password_reset:{token}")
 
-    return {
-        "message": "Password reset successfully."
-    }
-
-
-
-
+    return {"message": "Password reset successfully."}

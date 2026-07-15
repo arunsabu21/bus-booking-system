@@ -2,7 +2,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .throttles import RegisterRateThrottle, OTPVerifyRateThrottle, LoginRateThrottle
+from .throttles import (
+    RegisterRateThrottle,
+    OTPVerifyRateThrottle,
+    LoginRateThrottle,
+    ForgotPasswordRateThrottle,
+    ResetPasswordRateThrottle,
+)
 from .serializers import (
     RegisterSerializer,
     VerifyOtpSerializer,
@@ -93,6 +99,7 @@ def logout(request):
 
 
 @api_view(["POST"])
+@throttle_classes([ForgotPasswordRateThrottle])
 @permission_classes([AllowAny])
 def password_forgot(request):
     serializer = ForgotPasswordSerializer(data=request.data)
@@ -107,6 +114,7 @@ def password_forgot(request):
 
 
 @api_view(["POST"])
+@throttle_classes([ResetPasswordRateThrottle])
 @permission_classes([AllowAny])
 def password_reset(request):
     serializer = ResetPasswordSerializer(data=request.data)
