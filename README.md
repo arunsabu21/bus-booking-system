@@ -230,7 +230,7 @@ FORGOT_TOKEN_TIMEOUT=900
 
 ```bash
 git clone <repository-url>
-cd bus-booking-api
+cd halt-api
 
 python -m venv .venv
 source .venv/bin/activate
@@ -271,4 +271,5 @@ API testing can be performed using any of the following tools:
 ## Author
 
 **Arun**
-Backend Software Engineer
+
+Software Engineer
