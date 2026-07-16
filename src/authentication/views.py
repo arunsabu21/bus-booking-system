@@ -90,7 +90,7 @@ def logout(request):
     serializer = LogoutSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    response_data = logout_user(serializer.validated_data)
+    response_data = logout_user(request.user, serializer.validated_data)
 
     return Response(
         response_data,

@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from rest_framework.exceptions import ValidationError
 from django.db import transaction, IntegrityError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth.password_validation import validate_password
 from django.core.cache import cache
 from decouple import config
@@ -152,15 +153,18 @@ def login_user(validated_data):
     }
 
 
-def logout_user(validated_data):
+def logout_user(user, validated_data):
     refresh = validated_data["refresh"]
 
     try:
         token = RefreshToken(refresh)
-        token.blacklist()
-
-    except Exception:
+    except TokenError:
         raise ValidationError("Invalid or expired refresh token.")
+
+    if str(token["user_id"]) != str(user.id):
+        raise ValidationError("Invalid or expired refresh token.")
+
+    token.blacklist()
 
     return {"message": "Logged out successfully."}
 
