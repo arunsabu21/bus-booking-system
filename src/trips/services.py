@@ -1,6 +1,7 @@
 from rest_framework.exceptions import ValidationError, NotFound
 from .models import Trip
 from bookings.models import SeatBooking
+from datetime import datetime
 
 
 def get_trips():
@@ -35,6 +36,11 @@ def search_trips(*, source, destination, travel_date):
     if not travel_date:
         raise ValidationError("Travel date is required.")
     
+    try:
+        parsed_date = datetime.strptime(travel_date, "%Y-%m-%d").date()
+    except ValueError:
+        raise ValidationError("Invalid travel date format. Use YYYY-MM-DD.")
+    
     return (
         Trip.objects.select_related(
             "route",
@@ -47,7 +53,7 @@ def search_trips(*, source, destination, travel_date):
             status=Trip.Status.SCHEDULED,
             route__source_city__name__iexact=source,
             route__destination_city__name__iexact=destination,
-            travel_date=travel_date,
+            travel_date=parsed_date,
         ).order_by("departure_time")
     )
 
