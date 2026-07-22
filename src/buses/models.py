@@ -17,6 +17,7 @@ class Bus(models.Model):
     bus_name = models.CharField(max_length=100)
     bus_type = models.CharField(max_length=20, choices=BusType.choices)
     total_seats = models.PositiveSmallIntegerField()
+    amenities = models.JSONField(default=list, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -31,6 +31,7 @@ class RouteStop(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="stops")
     city = models.ForeignKey(City, on_delete=models.PROTECT, related_name="route_stops")
     stop_order = models.PositiveSmallIntegerField()
+    arrival_time = models.TimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["route", "stop_order"]

@@ -28,3 +28,14 @@ class BusAdmin(admin.ModelAdmin):
     ordering = (
         "bus_number",
     )
+
+    fields = (
+        "operator",
+        "bus_number",
+        "registration_number",
+        "bus_name",
+        "bus_type",
+        "total_seats",
+        "amenities",
+        "is_active",
+    )

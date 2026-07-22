@@ -10,10 +10,12 @@ class BusSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "operator",
+            "bus_number",
             "registration_number",
             "bus_name",
             "bus_type",
             "total_seats",
+            "amenities",
             "is_active",
             "created_at",
             "updated_at",
@@ -39,4 +41,5 @@ class BusListSerializer(serializers.ModelSerializer):
             "bus_name",
             "bus_type",
             "total_seats",
+            "amenities",
         ]

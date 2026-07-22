@@ -1,16 +1,19 @@
 from rest_framework import serializers
 from .models import Trip
+from buses.serializers import BusSerializer
 
 
 class TripSerializer(serializers.ModelSerializer):
     route = serializers.CharField(source="route.route_name")
-    bus = serializers.CharField(source="bus.bus_number")
+    route_id = serializers.UUIDField(source="route.id", read_only=True)
+    bus = BusSerializer(read_only=True)
 
     class Meta:
         model = Trip
         fields = [
             "id",
             "route",
+            "route_id",
             "bus",
             "travel_date",
             "departure_time",

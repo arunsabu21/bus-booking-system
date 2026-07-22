@@ -6,9 +6,9 @@ from rest_framework import status
 from .serializers import RouteSerializer, RouteStopSerializer
 from .services import get_routes, get_route_by_id, get_route_stops
 
-from core.cache.keys import get_routes_list_key
+from core.cache.keys import get_routes_list_key, route_stops_key
 from core.cache.services import get_cache, set_cache
-from core.constants.cache import ROUTE_LIST_CACHE_TIMEOUT
+from core.constants.cache import ROUTE_LIST_CACHE_TIMEOUT, ROUTE_STOPS_CACHE_TIMEOUT
 
 
 @api_view(["GET"])
@@ -56,12 +56,22 @@ def get_route_details(request, route_id):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_route_stop_details(request, route_id):
+    cache_key = route_stops_key(route_id)
+    cached_response = get_cache(cache_key)
 
-    stops = get_route_stops(route_id)
+    if cached_response is None:
+        return Response(cached_response, status=status.HTTP_200_OK)
 
-    serializer = RouteStopSerializer(stops, many=True)
+    result = get_route_stops(route_id)
 
-    return Response(
-        serializer.data,
-        status=status.HTTP_200_OK,
-    )
+    response_data = {
+        "route_id": result["route_id"],
+        "route_name": result["route_name"],
+        "source_city": result["source_city"],
+        "destination_city": result["destination_city"],
+        "stops": RouteStopSerializer(result["stops"]).data,
+    }
+
+    set_cache(key=cache_key, value=response_data, timeout=ROUTE_STOPS_CACHE_TIMEOUT)
+
+    return Response(response_data, status=status.HTTP_200_OK)
