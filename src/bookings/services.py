@@ -5,6 +5,7 @@ from rest_framework.exceptions import NotFound, ValidationError
 
 from .models import Booking, SeatBooking
 from trips.models import Trip
+from trips.services import _generate_deck_seats
 
 
 def get_bookings(user):
@@ -29,6 +30,18 @@ def get_booking_details(user, booking_id):
         raise NotFound("Booking not found.")
 
 
+def _get_valid_seat_numbers(bus):
+    if bus.deck_count == bus.Deck.DOUBLE:
+        half = bus.total_seats // 2
+        lower_count = half
+        upper_count = bus.total_seats - half
+        return set(
+            _generate_deck_seats("L", lower_count, bus.seat_layout)
+            + _generate_deck_seats("U", upper_count, bus.seat_layout)
+        )
+    return set(_generate_deck_seats("S", bus.total_seats, bus.seat_layout))
+
+
 @transaction.atomic
 def create_booking(*, user, trip_id, seat_numbers):
     try:
@@ -46,20 +59,17 @@ def create_booking(*, user, trip_id, seat_numbers):
 
     if seat_count == 0:
         raise ValidationError("Select at least one seat.")
-    
-    valid_seats = {
-        f"S{number}" for number in range(1, trip.bus.total_seats + 1)
-    }
 
-    invalid_seats = [
-        seat
-        for seat in seat_numbers
-        if seat not in valid_seats
-    ]
+    if len(seat_numbers) != len(set(seat_numbers)):
+        raise ValidationError("Duplicate seat numbers in request.")
+
+    valid_seats = _get_valid_seat_numbers(trip.bus)
+
+    invalid_seats = [seat for seat in seat_numbers if seat not in valid_seats]
 
     if invalid_seats:
         raise ValidationError(f"Invalid seat numbers(s): {','.join(invalid_seats)}")
-    
+
     booked_seats = set(
         SeatBooking.objects.filter(
             trip=trip,
@@ -68,7 +78,9 @@ def create_booking(*, user, trip_id, seat_numbers):
     )
 
     if booked_seats:
-        raise ValidationError(f"Seat(s) already booked: {','.join(sorted(booked_seats))}")
+        raise ValidationError(
+            f"Seat(s) already booked: {','.join(sorted(booked_seats))}"
+        )
 
     if seat_count > trip.available_seats:
         raise ValidationError("Not enough seats available.")
@@ -111,9 +123,10 @@ def generate_booking_reference():
 
 @transaction.atomic
 def cancel_booking(*, user, booking_id):
-    booking = Booking.objects.select_related(
-        "trip",
-    ).get(id=booking_id, user=user)
+    try:
+        booking = Booking.objects.select_related("trip").get(id=booking_id, user=user)
+    except Booking.DoesNotExist:
+        raise NotFound("Booking not found.")
 
     if booking.status == Booking.Status.CANCELLED:
         raise ValidationError("Booking is already cancelled.")
@@ -129,8 +142,6 @@ def cancel_booking(*, user, booking_id):
     booking.status = Booking.Status.CANCELLED
     booking.save(update_fields=["status"])
 
-    SeatBooking.objects.filter(
-        booking=booking,
-    ).delete()
+    SeatBooking.objects.filter(booking=booking).delete()
 
     return booking
