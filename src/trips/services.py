@@ -57,6 +57,29 @@ def search_trips(*, source, destination, travel_date):
         ).order_by("departure_time")
     )
 
+def _parse_seat_layout(seat_layout):
+    try:
+        left, right = seat_layout.split("+")
+        return int(left), int(right)
+    except (ValueError, AttributeError):
+        return 2, 2
+
+
+def _generate_deck_seats(prefix, seat_count, seat_layout):
+    left_count, right_count = _parse_seat_layout(seat_layout)
+    seats_per_row = left_count + right_count
+
+    labels = []
+    seat_number = 1
+    while len(labels) < seat_count:
+        for _ in range(seats_per_row):
+            if len(labels) >= seat_count:
+                break
+            labels.append(f"{prefix}{seat_number}")
+            seat_number += 1
+
+    return labels
+
 
 def get_trip_seats(trip_id):
     try:
@@ -68,6 +91,7 @@ def get_trip_seats(trip_id):
     except Trip.DoesNotExist:
         raise NotFound("Trip not found.")
 
+    bus = trip.bus
     booking_seats = set(
         SeatBooking.objects.filter(
             trip=trip,
@@ -77,21 +101,33 @@ def get_trip_seats(trip_id):
         )
     )
 
-    seats = []
+    if bus.deck_count == bus.Deck.DOUBLE:
+        half = bus.total_seats // 2
+        lower_count = half
+        upper_count = bus.total_seats - half
 
-    for seat_number in range(1, trip.bus.total_seats + 1):
-        seat = f"S{seat_number}"
-
-        seats.append(
-            {
-                "seat_number": seat,
-                "status": ("BOOKED" if seat in booking_seats else "AVAILABLE"),
-            }
+        seat_labels = _generate_deck_seats(
+            "L", lower_count, bus.seat_layout
+        ) + _generate_deck_seats("U", upper_count, bus.seat_layout)
+    else:
+        seat_labels = _generate_deck_seats(
+            "S", bus.total_seats, bus.seat_layout
         )
-    
+
+    seats = [
+        {
+            "seat_number": label,
+            "deck": "LOWER" if label.startswith("L") else "UPPER" if label.startswith("U") else "MAIN",
+            "status": "BOOKED" if label in booking_seats else "AVAILABLE",
+        }
+        for label in seat_labels
+    ]
+
     return {
         "trip": trip.route.route_name,
         "available_seats": trip.available_seats,
-        "total_seats": trip.bus.total_seats,
+        "total_seats": bus.total_seats,
+        "seat_layout": bus.seat_layout,
+        "deck_count": bus.deck_count,
         "seats": seats,
     }

@@ -15,6 +15,8 @@ class BusSerializer(serializers.ModelSerializer):
             "bus_name",
             "bus_type",
             "total_seats",
+            "seat_layout",
+            "deck_count",
             "amenities",
             "is_active",
             "created_at",
@@ -41,5 +43,7 @@ class BusListSerializer(serializers.ModelSerializer):
             "bus_name",
             "bus_type",
             "total_seats",
+            "seat_layout",
+            "deck_count",
             "amenities",
         ]

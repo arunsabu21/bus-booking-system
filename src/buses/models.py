@@ -9,14 +9,29 @@ class Bus(models.Model):
         AC_SLEEPER = "AC_SLEEPER", "AC Sleeper"
         NON_AC_SEATER = "NON_AC_SEATER", "Non-AC Seater"
         NON_AC_SLEEPER = "NON_AC_SLEEPER", "Non-AC Sleeper"
-    
+
+    class Deck(models.IntegerChoices):
+        SINGLE = 1, "Single Deck"
+        DOUBLE = 2, "Double Deck"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    operator = models.ForeignKey(Operator, on_delete=models.PROTECT, related_name="buses")
+    operator = models.ForeignKey(
+        Operator, on_delete=models.PROTECT, related_name="buses"
+    )
     bus_number = models.CharField(max_length=20, unique=True)
     registration_number = models.CharField(max_length=20, unique=True)
     bus_name = models.CharField(max_length=100)
     bus_type = models.CharField(max_length=20, choices=BusType.choices)
     total_seats = models.PositiveSmallIntegerField()
+    seat_layout = models.CharField(
+        max_length=10,
+        default="2+2",
+        help_text="Seats-per-row pattern, e.g. '2+2' (seater) or '2+1' (sleeper)",
+    )
+    deck_count = models.PositiveSmallIntegerField(
+        choices=Deck.choices,
+        default=Deck.SINGLE,
+    )
     amenities = models.JSONField(default=list, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
