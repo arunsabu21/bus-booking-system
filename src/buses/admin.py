@@ -36,6 +36,8 @@ class BusAdmin(admin.ModelAdmin):
         "bus_name",
         "bus_type",
         "total_seats",
+        "seat_layout",
+        "deck_count",
         "amenities",
         "is_active",
     )
